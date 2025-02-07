@@ -164,7 +164,11 @@ class UserManagement {
             requestEl.classList.add('registration-request');
             
             const requestText = document.createElement('span');
-            requestText.textContent = `Usuario: ${request.username}`;
+            requestText.innerHTML = `
+                <strong>Nombre de Usuario:</strong> ${request.username}<br>
+                <strong>Apellidos:</strong> ${request.apellidos}<br>
+                <strong>Correo Electrónico:</strong> ${request.email || 'No especificado'}
+            `;
             
             const buttonsContainer = document.createElement('div');
             buttonsContainer.classList.add('registration-request-buttons');
@@ -244,9 +248,9 @@ class UserManagement {
             if (user.username !== 'admin') {
                 const userEl = document.createElement('div');
                 userEl.innerHTML = `
-                    <strong>Usuario:</strong> ${user.username} 
-                    ${user.apellidos ? `<br><strong>Apellidos:</strong> ${user.apellidos}` : ''}
-                    ${user.email ? `<br><strong>Email:</strong> ${user.email}` : ''}
+                    <strong>Nombre de Usuario:</strong> ${user.username}<br>
+                    <strong>Apellidos:</strong> ${user.apellidos || 'No especificado'}<br>
+                    <strong>Correo Electrónico:</strong> ${user.email || 'No especificado'}
                 `;
                 userDatabaseList.appendChild(userEl);
             }
