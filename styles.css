@@ -1,0 +1,195 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f97255;
+    position: relative;
+}
+
+body::before {
+    content: 'CC.OO';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 200px;
+    color: rgba(255, 255, 255, 0.1);
+    z-index: -1;
+    font-weight: bold;
+}
+
+.container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: 1200px;
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.red-btn {
+    background-color: #f44336;
+}
+
+.registration-btn {
+    background-color: #f44336;
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.grid-container a.grid-item {
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.grid-container a.grid-item:hover {
+    background-color: #e1e1e1;
+}
+
+#logoutBtn {
+    background-color: #f44336;
+}
+
+#registrationRequests {
+    margin-top: 10px;
+    text-align: left;
+}
+
+.user-database {
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+}
+
+#showUsersBtn {
+    width: 100%;
+    padding: 10px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.user-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.user-list div {
+    padding: 5px;
+    border-bottom: 1px solid #f1f1f1;
+    background-color: green;
+    color: white;
+}
+
+#adminPanel button[type="submit"] {
+    background-color: #f44336;
+    color: white;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.registration-request {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+}
+
+.registration-request-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.registration-request-buttons button {
+    width: auto;
+    padding: 5px 10px;
+    margin: 0;
+}
+
+.approve-btn {
+    background-color: #4CAF50;
+}
+
+.reject-btn {
+    background-color: #f44336;
+}
+
+.registration-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #f44336;
+    cursor: pointer;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: auto;
+    padding: 0;
+}
+
+.registration-header h2 {
+    flex-grow: 1;
+    text-align: center;
+    margin: 0;
+}
