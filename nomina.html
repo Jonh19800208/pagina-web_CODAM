@@ -1,0 +1,617 @@
+<html>
+<head>
+  <title></title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Arial&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      position: relative;
+      font-family: 'Arial', sans-serif;
+      font-size: 21px;
+      background: #ff6961;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    @media (max-width: 1200px) {
+      body {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    .content-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 20px;
+    }
+
+    .calculator {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px; 
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+      border: 2px solid #ff0000;
+    }
+
+    .header-logos {
+      display: none;
+    }
+
+    .logo {
+      display: none; 
+    }
+
+    .input-group {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #333;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      background: #ff0000;
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1.1rem;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #cc0000;
+    }
+
+    .result {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #ff0000;
+      border-radius: 5px;
+      text-align: center;
+      color: white;
+    }
+
+    .result h2 {
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+
+    .breakdown {
+      text-align: left;
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      color: #333;
+    }
+
+    .breakdown p {
+      margin: 0.5rem 0;
+    }
+
+    .total-to-receive {
+      font-size: 1.3em;
+      font-weight: bold;
+      color: orange;
+      padding: 1rem;
+      border-top: 2px solid #ff0000;
+      margin-top: 1rem;
+    }
+
+    /* Add watermark styles */
+    body::before {
+      content: "CC.OO";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      align-items: center;
+      font-size: 48px;
+      color: rgba(227, 6, 19, 0.1); /* Light red color */
+      pointer-events: none;
+      z-index: -1;
+      transform: rotate(-45deg);
+      word-spacing: 3em;
+      line-height: 2;
+      padding: 20px;
+    }
+
+    /* Add new CSS rule */
+    .negative-amount {
+      color: red;
+      font-weight: bold;
+    }
+
+    /* Add new CSS rule */
+    .positive-amount {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body style="overflow-x: hidden">
+  <div class="content-wrapper">
+    <div class="calculator">
+      <div class="header-logos">
+        <svg class="logo" viewBox="0 0 200 100"/>
+        <svg class="logo" viewBox="0 0 200 100"/>
+      </div>
+
+      <div class="input-group">
+        <label for="category">Categor&#xed;a:</label>
+        <select id="category" onchange="updateBaseSalary()">
+          <option value>Selecciona una categor&#xed;a</option>
+          <option value="A">Categor&#xed;a A</option>
+          <option value="B">Categor&#xed;a B</option>
+          <option value="C">Categor&#xed;a C</option>
+          <option value="GRUPO2">Grupo II</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="daysInMonth">D&#xed;as del mes:</label>
+        <select id="daysInMonth" onchange="updateBaseSalary()">
+          <option value="28">28 d&#xed;as (Febrero)</option>
+          <option value="30">30 d&#xed;as</option>
+          <option value="31">31 d&#xed;as</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="workingDays">D&#xed;as laborables:</label>
+        <input type="number" id="workingDays" placeholder="Introduce los d&#xed;as laborables" min="16" max="23" value="22">
+      </div>
+
+      <div class="input-group">
+        <label for="baseSalary">Salario Base:</label>
+        <input type="number" id="baseSalary" readonly>
+      </div>
+
+      <div class="input-group">
+        <label>Plus Convenio:</label>
+        <input type="number" id="convenioPlus" readonly>
+      </div>
+
+      <div class="input-group">
+        <label for="adPersonam2Rate">Ad-Personam II:</label>
+        <input type="number" id="adPersonam2Rate" placeholder="Introduce PRECIO/UNI" step="0.001" max="99.999" onchange="validateAdPersonam2()">
+      </div>
+
+      <div class="input-group">
+        <label for="voluntaryRate">Complemento Voluntario:</label>
+        <input type="number" id="voluntaryRate" placeholder="Introduce PRECIO/UNI" step="0.01">
+      </div>
+
+      <div class="input-group">
+        <label for="hasAdPersonamPV">Plus Ad-Personam PV</label>
+        <select id="hasAdPersonamPV">
+          <option value="no">No</option>
+          <option value="yes">S&#xed;</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="hasCoordinationPlus">Plus Funcional Coordinaci&#xf3;n</label>
+        <select id="hasCoordinationPlus">
+          <option value="no">No</option>
+          <option value="yes">S&#xed;</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="hasDFestivo4Turno">Plus D-Festivo 4&#xba;Turno</label>
+        <select id="hasDFestivo4Turno">
+          <option value="no">No</option>
+          <option value="yes">S&#xed;</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="hasDisabledAid">Ayuda disminuido/a</label>
+        <select id="hasDisabledAid">
+          <option value="no">No</option>
+          <option value="yes">S&#xed;</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="jornadaEspecial">Tipo Jornada Especial:</label>
+        <select id="jornadaEspecial">
+          <option value="none">Ninguna</option>
+          <option value="A1">A1</option>
+          <option value="A2">A2</option>
+          <option value="B">B</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="hasPlusAdelantoTurno">Plus Adelanto Turno + &#xda;ltima Hora</label>
+        <select id="hasPlusAdelantoTurno">
+          <option value="no">No</option>
+          <option value="yes">S&#xed;</option>
+        </select>
+        <small style="display: block; margin-top: 5px; color: #666;">* Un plus Adelanto Turno equivale a una jornada especial B</small>
+      </div>
+
+      <div class="input-group">
+        <label for="estructuralDays">D&#xed;as Flexibilidad Estructural:</label>
+        <input type="number" id="estructuralDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="urgenteDays">D&#xed;as Flexibilidad Urgente:</label>
+        <input type="number" id="urgenteDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="coyunturalDays">D&#xed;as Flexibilidad Coyuntural:</label>
+        <input type="number" id="coyunturalDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="festivityDays">D&#xed;as festivos trabajados:</label>
+        <input type="number" id="festivityDays" placeholder="Introduce los d&#xed;as festivos trabajados" min="0" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="festivityWithRestDays">D&#xed;as festivos con descanso de dos dias:</label>
+        <input type="number" id="festivityWithRestDays" placeholder="Introduce los d&#xed;as festivos con descanso" min="0" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="weekendHours">Horas trabajadas en s&#xe1;bados y domingos:</label>
+        <input type="number" id="weekendHours" placeholder="Introduce las horas de fin de semana" min="0" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="nightHours">Horas Nocturnas:</label>
+        <input type="number" id="nightHours" placeholder="Introduce n&#xfa;mero de horas nocturnas">
+      </div>
+
+      <div class="input-group">
+        <label for="overtimeHours">Horas Extras:</label>
+        <input type="number" id="overtimeHours" placeholder="Introduce n&#xfa;mero de horas extras">
+      </div>
+
+      <div class="input-group">
+        <label for="formationHours">Horas Formaci&#xf3;n:</label>
+        <input type="number" id="formationHours" placeholder="Introduce n&#xfa;mero de horas formaci&#xf3;n">
+      </div>
+
+      <div class="input-group">
+        <label for="bocadilloDays">D&#xed;as Plus bocadillo en Puesto:</label>
+        <input type="number" id="bocadilloDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="hasExtraPay">Paga Extra Verano/Invierno</label>
+        <select id="hasExtraPay">
+          <option value="no">No</option>
+          <option value="yes">S&#xed;</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="beerCases">Cajas de cerveza:</label>
+        <input type="number" id="beerCases" placeholder="N&#xfa;mero de cajas de cerveza" min="0" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="sodaCases">Cajas de refresco:</label>
+        <input type="number" id="sodaCases" placeholder="N&#xfa;mero de cajas de refresco" min="0" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="avisosHours">Horas de Avisos:</label>
+        <input type="number" id="avisosHours" placeholder="Introduce n&#xfa;mero de horas" min="0" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="preAvisoDays">D&#xed;as Pre-Aviso 4&#xba;Turno:</label>
+        <input type="number" id="preAvisoDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" max="5" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="desactivacionFestivoDays">D&#xed;as Plus Desactivaci&#xf3;n festivo:</label>
+        <input type="number" id="desactivacionFestivoDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" max="5" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="comedorDays">D&#xed;as Servicio Comedor:</label>
+        <input type="number" id="comedorDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="excesosJornadaDays">D&#xed;as Excesos de jornada 2.024:</label>
+        <input type="number" id="excesosJornadaDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="personalLoan">Pr&#xe9;stamos personales:</label>
+        <input type="number" id="personalLoan" placeholder="Insertar cantidad mensual" step="0.01" min="0" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="irpf">Porcentaje IRPF (%):</label>
+        <input type="number" id="irpf" placeholder="Introduce el porcentaje de IRPF" step="0.01">
+      </div>
+
+      <button onclick="calculateSalary()">Calcular Salario</button>
+
+      <div class="result" id="result">
+        <h2>Resultado</h2>
+        <div class="breakdown" id="breakdown"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const CATEGORY_SALARIES = {
+  'A': 2000,
+  'B': 1800,
+  'C': 1691.178836,
+  'GRUPO2': 1931.943 // 64.3981 * 30 days
+};
+
+const DAMM_PLUS = {
+  'A': 55.555,
+  'B': 66.665,
+  'C': 91.0825,
+  'GRUPO2': 75.00  // Updated to 75 euros for Grupo II
+};
+
+const NIGHT_HOUR_RATE = 3.8944;
+const OVERTIME_HOUR_RATE = 19.629;
+const FESTIVITY_DAY_RATE = 297.838;
+const FESTIVITY_WITH_REST_RATE = 68.42937;
+const WEEKEND_HOUR_RATE = 12.7510;
+const UNION_FEE = 15.40;
+const AD_PERSONAM_PV_RATE = 65.0919;
+const COORDINATION_PLUS = 234.195213;
+const ESTRUCTURAL_RATE = 69.846007;
+const URGENTE_RATE = 76.830628;
+const COYUNTURAL_RATE = 73.3383175;
+const D_FESTIVO_4TURNO_RATE = 102.007695;
+const JORNADA_ESPECIAL_RATES = {
+  'A1': 214.0172216,
+  'A2': 236.56605,
+  'B': 32.00011876
+};
+const FORMATION_HOUR_RATE = 10.66671;
+const DISABLED_AID_RATE = 249.630724;
+const BOCADILLO_RATE = 10.81644133;
+const AVISOS_RATE = 29.75833758;
+const PRE_AVISO_RATE = 33.20300714;
+const PLUS_ADELANTO_TURNO_RATE = 61.44458957;
+const PLUS_DESACTIVACION_FESTIVO_RATE = 11.06766905;
+const PRORRATEO_RATES = {
+  'A': 7.4228,
+  'B': 8.0449,
+  'C': 11.4451,
+  'GRUPO2': 11.4451  // Using same as category C for now
+};
+const SEGURIDAD_SOCIAL_RATE = 0.047;
+const DESEMPLEO_RATE = 0.0155;
+const FORMACION_PROFESIONAL_RATE = 0.001;
+const SEGURIDAD_SOCIAL_MEI_RATE = 0.0013;
+const BEER_CASE_PRICE = 3.09;
+const SODA_CASE_PRICE = 4.14;
+const COMEDOR_RATE = 2.97;
+const EXCESOS_JORNADA_RATE = 162.9166;
+function validateAdPersonam2() {
+  const input = document.getElementById('adPersonam2Rate');
+  if (parseFloat(input.value) > 99.999) {
+    alert('El valor máximo permitido es 99.999');
+    input.value = '99.999';
+  }
+}
+function calculateConvenioPlus(workingDays, category) {
+  const rates = {
+    'A': 0,
+    'B': 13.7108,
+    'C': 14.8576,
+    'GRUPO2': 17.2845241
+  };
+  return rates[category] * workingDays;
+}
+function updateBaseSalary() {
+  const category = document.getElementById('category').value;
+  const daysInMonth = parseInt(document.getElementById('daysInMonth').value) || 30;
+  const workingDays = parseInt(document.getElementById('workingDays').value) || 22;
+  const baseSalaryInput = document.getElementById('baseSalary');
+  const convenioPlusInput = document.getElementById('convenioPlus');
+  if (category) {
+    baseSalaryInput.value = calculateBaseSalaryForDays(category, daysInMonth).toFixed(2);
+    convenioPlusInput.value = calculateConvenioPlus(workingDays, category).toFixed(2);
+  } else {
+    baseSalaryInput.value = '';
+    convenioPlusInput.value = '';
+  }
+}
+function calculateBaseSalaryForDays(category, daysInMonth) {
+  if (category === 'GRUPO2') {
+    return 64.3981 * daysInMonth;
+  }
+  if (category === 'A' && daysInMonth === 28) {
+    return 1264.35079;
+  }
+  if (category === 'B' && daysInMonth === 28) {
+    return 1370.32616;
+  }
+  if (category === 'C' && daysInMonth === 28) {
+    return 1527.516368;
+  }
+  if (category === 'C' && daysInMonth === 30) {
+    return 1636.62468;
+  }
+  if (category === 'B' && daysInMonth === 30) {
+    return 1468.2066;
+  }
+  if (category === 'B' && daysInMonth === 31) {
+    return 1517.14682;
+  }
+  if (category === 'A' && daysInMonth === 31) {
+    return 1399.81694;
+  }
+  if (category === 'A' && daysInMonth === 30) {
+    return 1354.66156;
+  }
+  return CATEGORY_SALARIES[category];
+}
+function calculateSalary() {
+  const category = document.getElementById('category').value;
+  if (!category) {
+    alert('Por favor, selecciona una categoría');
+    return;
+  }
+  const daysInMonth = parseInt(document.getElementById('daysInMonth').value) || 30;
+  const baseSalary = calculateBaseSalaryForDays(category, daysInMonth);
+  const nightHours = parseFloat(document.getElementById('nightHours').value) || 0;
+  const overtimeHours = parseFloat(document.getElementById('overtimeHours').value) || 0;
+  const formationHours = parseFloat(document.getElementById('formationHours').value) || 0;
+  const weekendHours = parseFloat(document.getElementById('weekendHours').value) || 0;
+  const workingDays = parseInt(document.getElementById('workingDays').value) || 22;
+  const convenioPlus = calculateConvenioPlus(workingDays, category);
+  const festivityDays = parseInt(document.getElementById('festivityDays').value) || 0;
+  const festivityWithRestDays = parseInt(document.getElementById('festivityWithRestDays').value) || 0;
+  const hasAdPersonamPV = document.getElementById('hasAdPersonamPV').value === 'yes';
+  const dammPlus = DAMM_PLUS[category];
+  const nightShift = nightHours * NIGHT_HOUR_RATE;
+  const overtime = overtimeHours * OVERTIME_HOUR_RATE;
+  const formationPay = formationHours * FORMATION_HOUR_RATE;
+  const weekendPay = weekendHours * WEEKEND_HOUR_RATE;
+  const adPersonamPV = hasAdPersonamPV ? AD_PERSONAM_PV_RATE : 0;
+  const adPersonam2Rate = Math.min(99.999, parseFloat(document.getElementById('adPersonam2Rate').value) || 0);
+  const adPersonam2 = adPersonam2Rate * daysInMonth;
+  const festivityPay = festivityDays * FESTIVITY_DAY_RATE;
+  const festivityWithRestPay = festivityWithRestDays * FESTIVITY_WITH_REST_RATE;
+  const hasCoordinationPlus = document.getElementById('hasCoordinationPlus').value === 'yes';
+  const coordinationPlus = hasCoordinationPlus ? COORDINATION_PLUS : 0;
+  const irpfPercentage = parseFloat(document.getElementById('irpf').value || 0).toFixed(2);
+  const estructuralDays = parseInt(document.getElementById('estructuralDays').value) || 0;
+  const urgenteDays = parseInt(document.getElementById('urgenteDays').value) || 0;
+  const coyunturalDays = parseInt(document.getElementById('coyunturalDays').value) || 0;
+  const estructuralPay = estructuralDays * ESTRUCTURAL_RATE;
+  const urgentePay = urgenteDays * URGENTE_RATE;
+  const coyunturalPay = coyunturalDays * COYUNTURAL_RATE;
+  const hasDFestivo4Turno = document.getElementById('hasDFestivo4Turno').value === 'yes';
+  const dFestivo4TurnoPay = hasDFestivo4Turno ? D_FESTIVO_4TURNO_RATE : 0;
+  const jornadaEspecialType = document.getElementById('jornadaEspecial').value;
+  const jornadaEspecialPay = jornadaEspecialType !== 'none' ? JORNADA_ESPECIAL_RATES[jornadaEspecialType] : 0;
+  const hasDisabledAid = document.getElementById('hasDisabledAid').value === 'yes';
+  const disabledAidPay = hasDisabledAid ? DISABLED_AID_RATE : 0;
+  const bocadilloDays = parseInt(document.getElementById('bocadilloDays').value) || 0;
+  const bocadilloPay = bocadilloDays * BOCADILLO_RATE;
+  const hasExtraPay = document.getElementById('hasExtraPay').value === 'yes';
+  const extraPay = hasExtraPay ? baseSalary + adPersonam2 + adPersonamPV : 0;
+  const voluntaryRate = parseFloat(document.getElementById('voluntaryRate').value) || 0;
+  const voluntaryPay = voluntaryRate * daysInMonth;
+  const avisosHours = parseFloat(document.getElementById('avisosHours').value) || 0;
+  const avisosPay = avisosHours * AVISOS_RATE;
+  const preAvisoDays = Math.min(5, parseInt(document.getElementById('preAvisoDays').value) || 0);
+  const preAvisoPay = preAvisoDays * PRE_AVISO_RATE;
+  const hasPlusAdelantoTurno = document.getElementById('hasPlusAdelantoTurno').value === 'yes';
+  const plusAdelantoTurnoPay = hasPlusAdelantoTurno ? PLUS_ADELANTO_TURNO_RATE : 0;
+  const desactivacionFestivoDays = Math.min(5, parseInt(document.getElementById('desactivacionFestivoDays').value) || 0);
+  const desactivacionFestivoPay = desactivacionFestivoDays * PLUS_DESACTIVACION_FESTIVO_RATE;
+  const comedorDays = parseInt(document.getElementById('comedorDays').value) || 0;
+  const comedorCost = comedorDays * COMEDOR_RATE;
+  const excesosJornadaDays = parseInt(document.getElementById('excesosJornadaDays').value) || 0;
+  const excesosJornadaPay = excesosJornadaDays * EXCESOS_JORNADA_RATE;
+  const personalLoan = parseFloat(document.getElementById('personalLoan').value) || 0;
+  const grossSalary = baseSalary + nightShift + overtime + formationPay + weekendPay + adPersonamPV + dammPlus + festivityPay + festivityWithRestPay + adPersonam2 + coordinationPlus + estructuralPay + urgentePay + coyunturalPay + dFestivo4TurnoPay + jornadaEspecialPay + disabledAidPay + bocadilloPay + extraPay + voluntaryPay + convenioPlus + avisosPay + preAvisoPay + plusAdelantoTurnoPay + desactivacionFestivoPay + excesosJornadaPay;
+  const remuneration = grossSalary - overtime;
+  const prorrateo = PRORRATEO_RATES[category] * daysInMonth;
+  const contingenciasComunes = remuneration + prorrateo;
+  const seguridadSocialDeduction = contingenciasComunes * SEGURIDAD_SOCIAL_RATE;
+  const desempleoDeduction = contingenciasComunes * DESEMPLEO_RATE;
+  const irpfDeduction = grossSalary * irpfPercentage / 100;
+  const formacionProfesionalDeduction = contingenciasComunes * FORMACION_PROFESIONAL_RATE;
+  const seguridadSocialMEIDeduction = contingenciasComunes * SEGURIDAD_SOCIAL_MEI_RATE;
+  const beerCases = parseInt(document.getElementById('beerCases').value) || 0;
+  const sodaCases = parseInt(document.getElementById('sodaCases').value) || 0;
+  const beerCost = beerCases * BEER_CASE_PRICE;
+  const sodaCost = sodaCases * SODA_CASE_PRICE;
+  const beverageCost = beerCost + sodaCost;
+  const netSalary = grossSalary - irpfDeduction - UNION_FEE - seguridadSocialDeduction - desempleoDeduction - formacionProfesionalDeduction - seguridadSocialMEIDeduction - beverageCost - comedorCost - personalLoan;
+  const breakdown = document.getElementById('breakdown');
+  breakdown.innerHTML = `
+        <p><strong>Categoría:</strong> ${category}</p>
+        <p><strong>Días del mes:</strong> ${daysInMonth}</p>
+        <p><strong>Días laborables:</strong> ${workingDays}</p>
+        <p><strong>Días festivos trabajados:</strong> ${festivityDays} días (${festivityPay.toFixed(2)}€)</p>
+        <p><strong>Días festivos con descanso de dos dias:</strong> ${festivityWithRestDays} días (${festivityWithRestPay.toFixed(2)}€)</p>
+        <p><strong>Horas fin de semana:</strong> ${weekendHours} horas (${weekendPay.toFixed(2)}€)</p>
+        <p><strong>Salario Base:</strong> ${baseSalary.toFixed(2)}€</p>
+        <p><strong>Plus Convenio:</strong> ${convenioPlus.toFixed(2)}€</p>
+        <p><strong>COMP. DEC. PERSONAL:</strong> ${dammPlus.toFixed(2)}€</p>
+        <p><strong>Plus Ad-Personam PV:</strong> ${adPersonamPV.toFixed(2)}€</p>
+        <p><strong>Plus Ad-Personam 2:</strong> ${adPersonam2.toFixed(2)}€</p>
+        <p><strong>Plus Funcional Coordinación:</strong> ${coordinationPlus.toFixed(2)}€</p>
+        <p><strong>Flexibilidad Estructural:</strong> ${estructuralDays} días (${estructuralPay.toFixed(2)}€)</p>
+        <p><strong>Flexibilidad Urgente:</strong> ${urgenteDays} días (${urgentePay.toFixed(2)}€)</p>
+        <p><strong>Flexibilidad Coyuntural:</strong> ${coyunturalDays} días (${coyunturalPay.toFixed(2)}€)</p>
+        <p><strong>Horas Nocturnas:</strong> ${nightHours} horas (${nightShift.toFixed(2)}€)</p>
+        <p><strong>Horas Extras:</strong> ${overtimeHours} horas (${overtime.toFixed(2)}€)</p>
+        <p><strong>Horas Formación:</strong> ${formationHours} horas (${formationPay.toFixed(2)}€)</p>
+        <p><strong>Horas de Avisos:</strong> ${avisosHours} horas (${avisosPay.toFixed(2)}€)</p>
+        <p><strong>Pre-Aviso 4ºTurno:</strong> ${preAvisoDays} días (${preAvisoPay.toFixed(2)}€)</p>
+        <p><strong>Plus D-Festivo 4ºTurno:</strong> ${dFestivo4TurnoPay.toFixed(2)}€</p>
+        <p><strong>Jornada Especial (${jornadaEspecialType}):</strong> ${jornadaEspecialPay.toFixed(2)}€</p>
+        <p><strong>Ayuda disminuido/a:</strong> ${disabledAidPay.toFixed(2)}€</p>
+        <p><strong>Plus bocadillo en Puesto:</strong> ${bocadilloPay.toFixed(2)}€</p>
+        <p><strong>Paga Extra Verano/Invierno:</strong> ${extraPay.toFixed(2)}€</p>
+        <p><strong>Complemento Voluntario:</strong> ${voluntaryPay.toFixed(2)}€</p>
+        <p><strong>Plus Adelanto Turno + Última Hora:</strong> ${plusAdelantoTurnoPay.toFixed(2)}€</p>
+        <p><strong>Plus Desactivación festivo:</strong> ${desactivacionFestivoDays} días (${desactivacionFestivoPay.toFixed(2)}€)</p>
+        <p><strong>Excesos de jornada 2.024:</strong> ${excesosJornadaDays} días (${excesosJornadaPay.toFixed(2)}€)</p>
+        <p><strong>Salario Bruto:</strong> <span class="positive-amount">${grossSalary.toFixed(2)}€</span></p>
+        <p><strong>Seguridad social (4.70%):</strong> <span class="negative-amount">-${seguridadSocialDeduction.toFixed(2)}€</span></p>
+        <p><strong>Desempleo (1.55%):</strong> <span class="negative-amount">-${desempleoDeduction.toFixed(2)}€</span></p>
+        <p><strong>Formación profesional (0.10%):</strong> <span class="negative-amount">-${formacionProfesionalDeduction.toFixed(2)}€</span></p>
+        <p><strong>Seguridad social MEI (0.13%):</strong> <span class="negative-amount">-${seguridadSocialMEIDeduction.toFixed(2)}€</span></p>
+        <p><strong>Cuota Sindical:</strong> <span class="negative-amount">-${UNION_FEE.toFixed(2)}€</span></p>
+        <p><strong>Deducción IRPF (${irpfPercentage}%):</strong> <span class="negative-amount">-${irpfDeduction.toFixed(2)}€</span></p>
+        <p><strong>Coste bebidas:</strong> <span class="negative-amount">-${beverageCost.toFixed(2)}€</span></p>
+        <p><strong>Servicio Comedor:</strong> <span class="negative-amount">-${comedorCost.toFixed(2)}€</span></p>
+        <p><strong>Préstamos personales:</strong> <span class="negative-amount">-${personalLoan.toFixed(2)}€</span></p>
+        <p class="total-to-receive"><strong>TOTAL A COBRAR:</strong> ${netSalary.toFixed(2)}€</p>
+    `;
+}
+document.addEventListener('DOMContentLoaded', function () {
+  updateBaseSalary();
+});
+</script>
+</body>
+</html>
