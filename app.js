@@ -44,22 +44,6 @@ class UserManagement {
         registerBtn.addEventListener('click', () => this.showRegistrationForm());
         showUsersBtn.addEventListener('click', () => this.displayRegisteredUsers());
 
-        // Add event listeners for grid item links
-        const gridLinks = [
-            'nomina-link', 'calendario-link', 'excesos-link', 'documentos-link', 
-            'venta-link', 'comedor-link', 'sede-link', 'noticias-link'
-        ];
-
-        gridLinks.forEach(linkId => {
-            const link = document.getElementById(linkId);
-            if (link) {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    alert(`Próximamente: ${link.textContent}`);
-                });
-            }
-        });
-
         // Add back button functionality to registration form
         const backToLoginBtn = document.getElementById('backToLoginBtn');
         if (backToLoginBtn) {

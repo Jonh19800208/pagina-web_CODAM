@@ -26,8 +26,10 @@ body::before {
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    width: 1200px;
+    width: 600px;
+    height: 40%;
     text-align: center;
+    overflow-y: auto;
 }
 
 input {
